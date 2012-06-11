@@ -1,4 +1,4 @@
 WanderingPath
 =============
 
-Drawing a path of random number of segments, each having a random number of lines.
+Drawing a path of segments, each having a random number of lines.
