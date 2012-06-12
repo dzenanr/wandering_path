@@ -1102,43 +1102,23 @@ Isolate.$defineClass("_VariableSizeListIterator", "Object", [], {
 
 Isolate.$defineClass("Closure", "Closure10", [], {
  $call$1: function(e) {
-  var lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
-  var segment = $.Segment$1(true);
-  $.add$1($.pen.get$path().get$segments(), segment);
-  var lineCount = $.toInt($.randomNum(8));
-  if (typeof lineCount !== 'number') return this.$call$1$bailout(e, 1, lastLine, segment, lineCount);
-  for (var i = 0; i < lineCount; ++i) {
-    var randomPoint = $.Point($.randomNum($.sub($.canvas.get$width(), 2.0)), $.randomNum($.sub($.canvas.get$height(), 2.0)));
-    var line = $.Line$2(lastLine.get$endPoint(), randomPoint);
-    $.add$1(segment.lines, line);
-    lastLine = line;
-  }
- },
- $call$1$bailout: function(e, state, env0, env1, env2) {
-  switch (state) {
-    case 1:
-      lastLine = env0;
-      segment = env1;
-      lineCount = env2;
-      break;
-  }
-  switch (state) {
-    case 0:
-      var lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
-      var segment = $.Segment$1(true);
-      $.add$1($.pen.get$path().get$segments(), segment);
-      var lineCount = $.toInt($.randomNum(8));
-    case 1:
-      state = 0;
-      var i = 0;
-      L0: while (true) {
-        if (!$.ltB(i, lineCount)) break L0;
-        var randomPoint = $.Point($.randomNum($.sub($.canvas.get$width(), 2.0)), $.randomNum($.sub($.canvas.get$height(), 2.0)));
-        var line = $.Line$2(lastLine.get$endPoint(), randomPoint);
-        $.add$1(segment.lines, line);
-        lastLine = line;
-        ++i;
-      }
+  try {
+    lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
+    segment = $.Segment$1(true);
+    $.add$1($.pen.get$path().get$segments(), segment);
+    lineCount = $.toInt($.randomNum(8));
+    for (i = 0; $.ltB(i, lineCount); i = $.add(i, 1)) {
+      x = $.randomNum($.sub($.canvas.get$width(), 2.0));
+      y = $.randomNum($.sub($.canvas.get$height(), 2.0));
+      randomPoint = $.Point(x, y);
+      line = $.Line$2(lastLine.get$endPoint(), randomPoint);
+      $.add$1(segment.get$lines(), line);
+      lastLine = line;
+    }
+  } catch (exception) {
+    var t1 = $.unwrapException(exception);
+    error = t1;
+    $.print('Error in wandering.main()! -- ' + $.S(error));
   }
  }
 });
@@ -1436,11 +1416,6 @@ $.checkNum = function(value) {
   return value;
 };
 
-$.clear2 = function() {
-  $.context.clearRect$4(0, 0, $.canvas.get$width(), $.canvas.get$height());
-  $.border();
-};
-
 $.clear = function(receiver) {
   if ($.isJsArray(receiver) !== true) {
     return receiver.clear$0();
@@ -1546,6 +1521,15 @@ $.convertDartClosureToJS = function(closure, arity) {
   });
   closure.$identity = function$;
   return function$;
+};
+
+$.printString = function(string) {
+  if (typeof console == "object") {
+    console.log(string);
+  } else {
+    write(string);
+    write("\n");
+  }
 };
 
 $._FixedSizeListIterator$1 = function(array) {
@@ -1787,6 +1771,11 @@ $._postMessage2 = function(win, message, targetOrigin) {
 };
 
 $.assert = function(condition) {
+};
+
+$.clear2 = function() {
+  $.context.clearRect$4(0, 0, $.canvas.get$width(), $.canvas.get$height());
+  $.border();
 };
 
 $._maybeScheduleMeasurementFrame = function() {
@@ -2074,21 +2063,27 @@ $.draw = function() {
   $.context.beginPath$0();
   $.context.set$lineWidth(1);
   $.context.set$strokeStyle('#000000');
-  for (var t1 = $.iterator($.pen.get$path().get$segments()); t1.hasNext$0() === true; ) {
-    var t2 = t1.next$0();
-    if (t2.get$draw() === true) {
-      for (t2 = $.iterator(t2.get$lines()); t2.hasNext$0() === true; ) {
-        var t3 = t2.next$0();
-        $.context.moveTo$2(t3.get$beginPoint().get$x(), t3.get$beginPoint().get$y());
-        $.context.lineTo$2(t3.get$endPoint().get$x(), t3.get$endPoint().get$y());
+  try {
+    for (var t1 = $.iterator($.pen.get$path().get$segments()); t1.hasNext$0() === true; ) {
+      segment = t1.next$0();
+      if (segment.get$draw() === true) {
+        for (var t2 = $.iterator(segment.get$lines()); t2.hasNext$0() === true; ) {
+          line = t2.next$0();
+          $.context.moveTo$2(line.get$beginPoint().get$x(), line.get$beginPoint().get$y());
+          $.context.lineTo$2(line.get$endPoint().get$x(), line.get$endPoint().get$y());
+        }
       }
     }
-  }
-  var lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
-  if (!$.eqNullB(lastLine)) {
-    $.context.rect$4($.sub(lastLine.get$endPoint().get$x(), 2.0), $.sub(lastLine.get$endPoint().get$y(), 2.0), 4, 4);
-  } else {
-    $.context.rect$4($.sub($.center().get$x(), 2.0), $.sub($.center().get$y(), 2.0), 4, 4);
+    lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
+    if (!$.eqNullB(lastLine)) {
+      $.context.rect$4($.sub(lastLine.get$endPoint().get$x(), 2.0), $.sub(lastLine.get$endPoint().get$y(), 2.0), 4, 4);
+    } else {
+      $.context.rect$4($.sub($.center().get$x(), 2.0), $.sub($.center().get$y(), 2.0), 4, 4);
+    }
+  } catch (exception) {
+    t1 = $.unwrapException(exception);
+    error = t1;
+    $.print('Error in wandering.draw()! -- ' + $.S(error));
   }
   $.context.fill$0();
   $.context.stroke$0();
@@ -2182,6 +2177,10 @@ $.checkString = function(value) {
     throw $.captureStackTrace($.IllegalArgumentException$1(value));
   }
   return value;
+};
+
+$.print = function(obj) {
+  return $.printString($.toString(obj));
 };
 
 $.div = function(a, b) {
@@ -2470,10 +2469,6 @@ $._emitMap = function(m, result, visiting) {
   $.removeLast(t1.visiting_2);
 };
 
-$._JavaScriptAudioNodeEventsImpl$1 = function(_ptr) {
-  return new $._JavaScriptAudioNodeEventsImpl(_ptr);
-};
-
 $._IDBDatabaseEventsImpl$1 = function(_ptr) {
   return new $._IDBDatabaseEventsImpl(_ptr);
 };
@@ -2512,6 +2507,10 @@ $.dynamicBind = function(obj, name$, methods, arguments$) {
 
 $._MessagePortEventsImpl$1 = function(_ptr) {
   return new $._MessagePortEventsImpl(_ptr);
+};
+
+$._JavaScriptAudioNodeEventsImpl$1 = function(_ptr) {
+  return new $._JavaScriptAudioNodeEventsImpl(_ptr);
 };
 
 $._MeasurementRequest$2 = function(computeValue, completer) {
