@@ -784,13 +784,54 @@ Isolate.$defineClass("TypeError", "AssertionError", ["msg"], {
 Isolate.$defineClass("Pen", "Object", ["path?"], {
  Pen$1: function(startPosition) {
   this.path = $.Path$0();
-  var startSegment = $.Segment$1(false);
-  $.add$1(startSegment.lines, $.Line$2(startPosition, startPosition));
-  $.add$1(this.path.get$segments(), startSegment);
+  this.path.createStartSegment$1(startPosition);
  }
 });
 
 Isolate.$defineClass("Path", "Object", ["segments?"], {
+ lastLine$1: function(segment) {
+  if (!$.eqNullB(segment)) {
+    if ($.isEmpty(segment.get$lines()) !== true) {
+      var result = $.last(segment.get$lines());
+    } else {
+      var previous = this.previousSegment$1(segment);
+      if (!$.eqNullB(previous)) {
+        result = this.lastLine$1(previous);
+      } else {
+        result = (void 0);
+      }
+    }
+  } else {
+    result = (void 0);
+  }
+  return result;
+ },
+ previousSegment$1: function(segment) {
+  if (!$.eqNullB(segment)) {
+    var index = $.indexOf$1(this.segments, segment);
+    if ($.gtB(index, 0)) {
+      var result = $.index(this.segments, $.sub(index, 1));
+    } else {
+      result = (void 0);
+    }
+  } else {
+    result = (void 0);
+  }
+  return result;
+ },
+ lastSegment$0: function() {
+  if ($.isEmpty(this.segments) !== true) {
+    var result = $.last(this.segments);
+  } else {
+    result = (void 0);
+  }
+  return result;
+ },
+ createStartSegment$1: function(startPosition) {
+  var startSegment = $.Segment$1(false);
+  $.add$1(startSegment.lines, $.Line$2(startPosition, startPosition));
+  $.add$1(this.segments, startSegment);
+ },
  Path$0: function() {
   var t1 = $.List((void 0));
   $.setRuntimeTypeInfo(t1, ({E: 'Segment'}));
@@ -799,6 +840,14 @@ Isolate.$defineClass("Path", "Object", ["segments?"], {
 });
 
 Isolate.$defineClass("Segment", "Object", ["lines?", "draw?"], {
+ last$0: function() {
+  if ($.isEmpty(this.lines.get$size()) !== true) {
+    var result = $.last(this.lines);
+  } else {
+    result = (void 0);
+  }
+  return result;
+ },
  Segment$1: function(draw) {
   var t1 = $.List((void 0));
   $.setRuntimeTypeInfo(t1, ({E: 'Line'}));
@@ -1053,7 +1102,7 @@ Isolate.$defineClass("_VariableSizeListIterator", "Object", [], {
 
 Isolate.$defineClass("Closure", "Closure10", [], {
  $call$1: function(e) {
-  var lastLine = $.last($.last($.pen.get$path().get$segments()).get$lines());
+  var lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
   var segment = $.Segment$1(true);
   $.add$1($.pen.get$path().get$segments(), segment);
   var lineCount = $.toInt($.randomNum(8));
@@ -1075,7 +1124,7 @@ Isolate.$defineClass("Closure", "Closure10", [], {
   }
   switch (state) {
     case 0:
-      var lastLine = $.last($.last($.pen.get$path().get$segments()).get$lines());
+      var lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
       var segment = $.Segment$1(true);
       $.add$1($.pen.get$path().get$segments(), segment);
       var lineCount = $.toInt($.randomNum(8));
@@ -1385,6 +1434,11 @@ $.checkNum = function(value) {
     throw $.captureStackTrace($.IllegalArgumentException$1(value));
   }
   return value;
+};
+
+$.clear2 = function() {
+  $.context.clearRect$4(0, 0, $.canvas.get$width(), $.canvas.get$height());
+  $.border();
 };
 
 $.clear = function(receiver) {
@@ -1698,6 +1752,13 @@ $.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
   }
 };
 
+$.last = function(receiver) {
+  if ($.isJsArray(receiver) !== true) {
+    return receiver.last$0();
+  }
+  return $.index(receiver, $.sub($.get$length(receiver), 1));
+};
+
 $._EventListenerListImpl$2 = function(_ptr, _type) {
   return new $._EventListenerListImpl(_type, _ptr);
 };
@@ -1728,13 +1789,6 @@ $._postMessage2 = function(win, message, targetOrigin) {
 $.assert = function(condition) {
 };
 
-$.last = function(receiver) {
-  if ($.isJsArray(receiver) !== true) {
-    return receiver.last$0();
-  }
-  return $.index(receiver, $.sub($.get$length(receiver), 1));
-};
-
 $._maybeScheduleMeasurementFrame = function() {
   if ($._nextMeasurementFrameScheduled === true) {
     return;
@@ -1762,11 +1816,6 @@ $.border = function() {
 
 $.TypeError$1 = function(msg) {
   return new $.TypeError(msg);
-};
-
-$.clear2 = function() {
-  $.context.clearRect$4(0, 0, $.canvas.get$width(), $.canvas.get$height());
-  $.border();
 };
 
 $.buildDynamicMetadata = function(inputTable) {
@@ -1818,6 +1867,10 @@ $.contains$1 = function(receiver, other) {
   return $.contains$2(receiver, other, 0);
 };
 
+$._EventSourceEventsImpl$1 = function(_ptr) {
+  return new $._EventSourceEventsImpl(_ptr);
+};
+
 $.mul = function(a, b) {
   if (typeof a === 'number' && typeof b === 'number') {
     var t1 = (a * b);
@@ -1825,10 +1878,6 @@ $.mul = function(a, b) {
     t1 = $.mul$slow(a, b);
   }
   return t1;
-};
-
-$._EventSourceEventsImpl$1 = function(_ptr) {
-  return new $._EventSourceEventsImpl(_ptr);
 };
 
 $.random = function() {
@@ -1912,12 +1961,12 @@ $.toStringWrapper = function() {
   return $.toString((this.dartException));
 };
 
-$._WorkerContextEventsImpl$1 = function(_ptr) {
-  return new $._WorkerContextEventsImpl(_ptr);
-};
-
 $._PeerConnection00EventsImpl$1 = function(_ptr) {
   return new $._PeerConnection00EventsImpl(_ptr);
+};
+
+$._WorkerContextEventsImpl$1 = function(_ptr) {
+  return new $._WorkerContextEventsImpl(_ptr);
 };
 
 $._postMessage3 = function(win, message, targetOrigin, messagePorts) {
@@ -1988,14 +2037,14 @@ $._ElementRectImpl$1 = function(element) {
   return new $._ElementRectImpl(element.$dom_getClientRects$0(), t4, t3, t2, t1);
 };
 
+$._IDBRequestEventsImpl$1 = function(_ptr) {
+  return new $._IDBRequestEventsImpl(_ptr);
+};
+
 $.HashSetImplementation$0 = function() {
   var t1 = new $.HashSetImplementation((void 0));
   t1.HashSetImplementation$0();
   return t1;
-};
-
-$._IDBRequestEventsImpl$1 = function(_ptr) {
-  return new $._IDBRequestEventsImpl(_ptr);
 };
 
 $.stringSplitUnchecked = function(receiver, pattern) {
@@ -2035,8 +2084,12 @@ $.draw = function() {
       }
     }
   }
-  var lastLine = $.last($.last($.pen.get$path().get$segments()).get$lines());
-  $.context.rect$4($.sub(lastLine.get$endPoint().get$x(), 2.0), $.sub(lastLine.get$endPoint().get$y(), 2.0), 4, 4);
+  var lastLine = $.pen.get$path().lastLine$1($.pen.get$path().lastSegment$0());
+  if (!$.eqNullB(lastLine)) {
+    $.context.rect$4($.sub(lastLine.get$endPoint().get$x(), 2.0), $.sub(lastLine.get$endPoint().get$y(), 2.0), 4, 4);
+  } else {
+    $.context.rect$4($.sub($.center().get$x(), 2.0), $.sub($.center().get$y(), 2.0), 4, 4);
+  }
   $.context.fill$0();
   $.context.stroke$0();
   $.context.closePath$0();
@@ -2129,6 +2182,15 @@ $.checkString = function(value) {
     throw $.captureStackTrace($.IllegalArgumentException$1(value));
   }
   return value;
+};
+
+$.div = function(a, b) {
+  if (typeof a === 'number' && typeof b === 'number') {
+    var t1 = (a / b);
+  } else {
+    t1 = $.div$slow(a, b);
+  }
+  return t1;
 };
 
 $.dynamicFunction = function(name$) {
@@ -2494,15 +2556,6 @@ $._ElementEventsImpl$1 = function(_ptr) {
   return new $._ElementEventsImpl(_ptr);
 };
 
-$.div = function(a, b) {
-  if (typeof a === 'number' && typeof b === 'number') {
-    var t1 = (a / b);
-  } else {
-    t1 = $.div$slow(a, b);
-  }
-  return t1;
-};
-
 $.indexOf = function(a, element, startIndex, endIndex) {
   if (typeof a !== 'string' && (typeof a !== 'object'||a.constructor !== Array)) return $.indexOf$bailout(a, element, startIndex, endIndex, 1, a, 0, 0);
   if (typeof endIndex !== 'number') return $.indexOf$bailout(a, element, startIndex, endIndex, 2, a, endIndex, 0);
@@ -2574,6 +2627,13 @@ $.forEach3 = function(iterable, f) {
   for (var t1 = $.iterator(iterable); t1.hasNext$0() === true; ) {
     f.$call$1(t1.next$0());
   }
+};
+
+$.indexOf$1 = function(receiver, element) {
+  if ($.isJsArray(receiver) === true || typeof receiver === 'string') {
+    return $.indexOf$2(receiver, element, 0);
+  }
+  return receiver.indexOf$1(element);
 };
 
 $.indexOf$2 = function(receiver, element, start) {
@@ -2831,10 +2891,6 @@ $.unwrapException = function(ex) {
   return ex;
 };
 
-$._AbstractWorkerEventsImpl$1 = function(_ptr) {
-  return new $._AbstractWorkerEventsImpl(_ptr);
-};
-
 $.center = function() {
   return $.Point($.div($.canvas.get$width(), 2), $.div($.canvas.get$height(), 2));
 };
@@ -2861,6 +2917,10 @@ $.getTypeNameOf = function(obj) {
     $._getTypeNameOf = $.getFunctionForTypeNameOf();
   }
   return $._getTypeNameOf.$call$1(obj);
+};
+
+$._AbstractWorkerEventsImpl$1 = function(_ptr) {
+  return new $._AbstractWorkerEventsImpl(_ptr);
 };
 
 $.IllegalArgumentException$1 = function(arg) {
@@ -3173,6 +3233,9 @@ $.$defineNativeClass('HTMLBRElement', [], {
  clear$0: function() { return this.clear.$call$0(); }
 });
 
+$.$defineNativeClass('HTMLBaseFontElement', ["size?"], {
+});
+
 $.$defineNativeClass('BatteryManager', [], {
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
@@ -3180,6 +3243,9 @@ $.$defineNativeClass('BatteryManager', [], {
  get$on: function() {
   return $._BatteryManagerEventsImpl$1(this);
  }
+});
+
+$.$defineNativeClass('Blob', ["size?"], {
 });
 
 $.$defineNativeClass('HTMLBodyElement', [], {
@@ -3206,6 +3272,9 @@ $.$defineNativeClass('CSSStyleDeclaration', ["length?"], {
  },
  get$top: function() {
   return this.getPropertyValue$1('top');
+ },
+ get$size: function() {
+  return this.getPropertyValue$1('size');
  },
  get$left: function() {
   return this.getPropertyValue$1('left');
@@ -3314,6 +3383,9 @@ $.$defineNativeClass('DOMStringList', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3578,6 +3650,9 @@ $.$defineNativeClass('FileList', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3633,6 +3708,9 @@ $.$defineNativeClass('Float32Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3667,6 +3745,9 @@ $.$defineNativeClass('Float64Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3691,6 +3772,9 @@ $.$defineNativeClass('Float64Array', ["length?"], {
  is$Collection: function() { return true; }
 });
 
+$.$defineNativeClass('HTMLFontElement', ["size?"], {
+});
+
 $.$defineNativeClass('HTMLFormElement', ["length?"], {
 });
 
@@ -3703,7 +3787,7 @@ $.$defineNativeClass('HTMLFrameSetElement', [], {
  }
 });
 
-$.$defineNativeClass('HTMLHRElement', ["width?"], {
+$.$defineNativeClass('HTMLHRElement', ["width?", "size?"], {
 });
 
 $.$defineNativeClass('HTMLAllCollection', ["length?"], {
@@ -3719,6 +3803,9 @@ $.$defineNativeClass('HTMLCollection', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3832,7 +3919,7 @@ $.$defineNativeClass('HTMLImageElement', ["y?", "x?", "width?", "height?"], {
  complete$1: function(arg0) { return this.complete.$call$1(arg0); }
 });
 
-$.$defineNativeClass('HTMLInputElement', ["width?", "value=", "pattern?", "height?"], {
+$.$defineNativeClass('HTMLInputElement', ["width?", "value=", "size?", "pattern?", "height?"], {
  get$on: function() {
   return $._InputElementEventsImpl$1(this);
  }
@@ -3848,6 +3935,9 @@ $.$defineNativeClass('Int16Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3882,6 +3972,9 @@ $.$defineNativeClass('Int32Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3916,6 +4009,9 @@ $.$defineNativeClass('Int8Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -3992,6 +4088,9 @@ $.$defineNativeClass('MediaList', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4047,6 +4146,9 @@ $.$defineNativeClass('MessagePort', [], {
  }
 });
 
+$.$defineNativeClass('Metadata', ["size?"], {
+});
+
 $.$defineNativeClass('HTMLMeterElement', ["value="], {
 });
 
@@ -4063,6 +4165,9 @@ $.$defineNativeClass('NamedNodeMap', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4118,6 +4223,9 @@ $.$defineNativeClass('NodeList', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4439,7 +4547,7 @@ $.$defineNativeClass('SVGUseElement', ["y?", "x?", "width?", "height?"], {
 $.$defineNativeClass('Screen', ["width?", "height?"], {
 });
 
-$.$defineNativeClass('HTMLSelectElement', ["value=", "length="], {
+$.$defineNativeClass('HTMLSelectElement', ["value=", "size?", "length="], {
 });
 
 $.$defineNativeClass('ShadowRoot', [], {
@@ -4537,6 +4645,9 @@ $.$defineNativeClass('StyleSheetList', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4585,7 +4696,7 @@ $.$defineNativeClass('TextTrack', [], {
  }
 });
 
-$.$defineNativeClass('TextTrackCue', ["text!"], {
+$.$defineNativeClass('TextTrackCue', ["text!", "size?"], {
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -4619,6 +4730,9 @@ $.$defineNativeClass('TouchList', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4653,6 +4767,9 @@ $.$defineNativeClass('Uint16Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4687,6 +4804,9 @@ $.$defineNativeClass('Uint32Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4721,6 +4841,9 @@ $.$defineNativeClass('Uint8Array', ["length?"], {
  indexOf$2: function(element, start) {
   return $.indexOf2(this, element, start, $.get$length(this));
  },
+ indexOf$1: function(element) {
+  return this.indexOf$2(element,0)
+},
  isEmpty$0: function() {
   return $.eq($.get$length(this), 0);
  },
@@ -4751,6 +4874,9 @@ $.$defineNativeClass('Uint8ClampedArray', [], {
 });
 
 $.$defineNativeClass('HTMLVideoElement', ["width?", "height?"], {
+});
+
+$.$defineNativeClass('WebGLActiveInfo', ["size?"], {
 });
 
 $.$defineNativeClass('WebGLRenderingContext', [], {
@@ -4865,9 +4991,9 @@ $.$defineNativeClass('IDBOpenDBRequest', [], {
  }
 });
 
-// 213 dynamic classes.
-// 324 classes
-// 26 !leaf
+// 218 dynamic classes.
+// 328 classes
+// 27 !leaf
 (function(){
   var v0/*class(_SVGTextPositioningElementImpl)*/ = 'SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement';
   var v1/*class(_MediaElementImpl)*/ = 'HTMLMediaElement|HTMLVideoElement|HTMLAudioElement';
@@ -4887,6 +5013,7 @@ $.$defineNativeClass('IDBOpenDBRequest', [], {
     ['Uint8Array', 'Uint8Array|Uint8ClampedArray'],
     ['AudioParam', 'AudioParam|AudioGain'],
     ['WorkerContext', v6/*class(_WorkerContextImpl)*/],
+    ['Blob', 'Blob|File'],
     ['CSSValueList', 'CSSValueList|WebKitCSSFilterValue|WebKitCSSTransformValue'],
     ['CharacterData', v5/*class(_CharacterDataImpl)*/],
     ['DOMTokenList', 'DOMTokenList|DOMSettableTokenList'],

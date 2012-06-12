@@ -50,27 +50,41 @@ border() {
 }
 
 draw() {
-  clear();
-  context.beginPath();
-  context.lineWidth = LINE_WIDTH;
-  context.strokeStyle = LINE_COLOR;
-  for (Segment segment in pen.path.segments) {
-    if (segment.draw) {
-      // draw line
-      for (Line line in segment.lines) {
-        context.moveTo(line.beginPoint.x, line.beginPoint.y);
-        context.lineTo(line.endPoint.x, line.endPoint.y);
+  //try {
+    clear();
+    context.beginPath();
+    context.lineWidth = LINE_WIDTH;
+    context.strokeStyle = LINE_COLOR;
+    for (Segment segment in pen.path.segments) {
+      if (segment.draw) {
+        // draw line
+        for (Line line in segment.lines) {
+          context.moveTo(line.beginPoint.x, line.beginPoint.y);
+          context.lineTo(line.endPoint.x, line.endPoint.y);
+        }
       }
     }
+    var lastLine = pen.path.lastLine(pen.path.lastSegment());
+    // draw pen
+    if (lastLine != null) {
+      context.rect(lastLine.endPoint.x - PEN_SIZE / 2,
+        lastLine.endPoint.y  - PEN_SIZE / 2, PEN_SIZE, PEN_SIZE);
+    } else {
+      context.rect(center().x - PEN_SIZE / 2,
+        center().y  - PEN_SIZE / 2, PEN_SIZE, PEN_SIZE);
+    }
+    context.fill();
+    context.stroke();
+    context.closePath();
+  /*
+  } catch(final error) {
+    print('Error in wandering.draw()! -- $error');
+  } finally {
+    print('Cleanup after the error in wandering.draw()!');
+    pen.path.segments.clear();
+    pen.path.createStartSegment(center());
   }
-  Segment lastSegment = pen.path.segments.last();
-  Line lastLine = lastSegment.lines.last();
-  // draw pen
-  context.rect(lastLine.endPoint.x - PEN_SIZE / 2,
-    lastLine.endPoint.y  - PEN_SIZE / 2, PEN_SIZE, PEN_SIZE);
-  context.fill();
-  context.stroke();
-  context.closePath();
+  */
 }
 
 main() {
@@ -79,20 +93,29 @@ main() {
   pen = new Pen(center());
   segmentButton = document.query('#segment');
   segmentButton.on.click.add((MouseEvent e) {
-    var lastLine = pen.path.segments.last().lines.last();
-    var segment = new Segment();
-    pen.path.segments.add(segment);
-    int lineCount = randomNum(MAX_LINE_COUNT_IN_SEGMENT).toInt();
-    for (var i = 0; i < lineCount; i++) {
-      var x = randomNum(canvas.width - PEN_SIZE / 2);
-      var y = randomNum(canvas.height - PEN_SIZE / 2);
-      var randomPoint = new Point(x, y);
-      var line = new Line(lastLine.endPoint, randomPoint);
-      segment.lines.add(line);
-      lastLine = line;
+    //try {
+      var lastLine = pen.path.lastLine(pen.path.lastSegment());
+      var segment = new Segment();
+      pen.path.segments.add(segment);
+      int lineCount = randomNum(MAX_LINE_COUNT_IN_SEGMENT).toInt();
+      for (var i = 0; i < lineCount; i++) {
+        var x = randomNum(canvas.width - PEN_SIZE / 2);
+        var y = randomNum(canvas.height - PEN_SIZE / 2);
+        var randomPoint = new Point(x, y);
+        var line = new Line(lastLine.endPoint, randomPoint);
+        segment.lines.add(line);
+        lastLine = line;
+      }
+    /*
+    } catch(final error) {
+      print('Error in wandering.main()! -- $error');
+    } finally {
+      print('Cleanup after the error in wandering.main()!');
+      pen.path.segments.clear();
+      pen.path.createStartSegment(center());
     }
+    */
   });
-
   // Redraw every INTERVAL ms.
   document.window.setInterval(draw, INTERVAL);
 }

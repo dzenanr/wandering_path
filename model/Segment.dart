@@ -8,4 +8,12 @@ class Segment {
     lines = new List<Line>();
   }
 
+  Line last() {
+    var result = null;
+    if (!lines.size.isEmpty()) {
+      result = lines.last();
+    }
+    return result;
+  }
+
 }
