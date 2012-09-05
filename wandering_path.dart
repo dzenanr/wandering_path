@@ -81,7 +81,7 @@ draw() {
       context.rect(center().x - PEN_SIZE / 2,
         center().y  - PEN_SIZE / 2, PEN_SIZE, PEN_SIZE);
     }
-  } catch(final error) {
+  } catch(error) {
     print('Error in wandering.draw()! -- $error');
   }
   context.fill();
@@ -108,7 +108,7 @@ main() {
         segment.lines.add(line);
         lastLine = line;
       }
-    } catch(final error) {
+    } catch(error) {
       print('Error in wandering.main()! -- $error');
     }
   });
