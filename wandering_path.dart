@@ -1,4 +1,5 @@
 #import('dart:html');
+#import('dart:isolate');
 #import('dart:math');
 
 #source('model/Pen.dart');
@@ -113,7 +114,7 @@ main() {
     }
   });
   // Redraw every INTERVAL ms.
-  document.window.setInterval(draw, INTERVAL);
+  new Timer.repeating(INTERVAL, (t) => draw());
 }
 
 
