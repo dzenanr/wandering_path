@@ -1,11 +1,11 @@
-#import('dart:html');
-#import('dart:isolate');
-#import('dart:math');
+import 'dart:html';
+import 'dart:isolate';
+import 'dart:math';
 
-#source('model/Pen.dart');
-#source('model/Path.dart');
-#source('model/Segment.dart');
-#source('model/Line.dart');
+part 'model/pen.dart';
+part 'model/path.dart';
+part 'model/segment.dart';
+part 'model/line.dart';
 
 // See the style guide: http://www.dartlang.org/articles/style-guide/ .
 
@@ -16,12 +16,12 @@
 
 // For debugging use print() and CTRL+SHIFT+J to open the console in Chrome.
 
-final int LINE_WIDTH = 1;
-final String LINE_COLOR = '#000000'; // black
-final int PEN_SIZE = 4;
-final int MAX_LINE_COUNT_IN_SEGMENT = 8;
+final int lineWidth = 1;
+final String lineColor = '#000000'; // black
+final int penSize = 4;
+final int maxLineCountInSegment = 8;
 // The canvas will be redrawn every INTERVAL ms.
-final int INTERVAL = 10;
+final int interval = 10;
 
 var canvas;
 var context;
@@ -52,8 +52,8 @@ clear() {
 border() {
   context.beginPath();
   context.rect(0, 0, canvas.width, canvas.height);
-  context.lineWidth = LINE_WIDTH;
-  context.strokeStyle = LINE_COLOR;
+  context.lineWidth = lineWidth;
+  context.strokeStyle = lineColor;
   context.stroke();
   context.closePath();
 }
@@ -61,8 +61,8 @@ border() {
 draw() {
   clear();
   context.beginPath();
-  context.lineWidth = LINE_WIDTH;
-  context.strokeStyle = LINE_COLOR;
+  context.lineWidth = lineWidth;
+  context.strokeStyle = lineColor;
   try {
     for (Segment segment in pen.path.segments) {
       if (segment.draw) {
@@ -76,11 +76,11 @@ draw() {
     var lastLine = pen.path.lastLine(pen.path.lastSegment());
     // draw pen
     if (lastLine != null) {
-      context.rect(lastLine.endPoint.x - PEN_SIZE / 2,
-        lastLine.endPoint.y  - PEN_SIZE / 2, PEN_SIZE, PEN_SIZE);
+      context.rect(lastLine.endPoint.x - penSize / 2,
+        lastLine.endPoint.y  - penSize / 2, penSize, penSize);
     } else {
-      context.rect(center().x - PEN_SIZE / 2,
-        center().y  - PEN_SIZE / 2, PEN_SIZE, PEN_SIZE);
+      context.rect(center().x - penSize / 2,
+        center().y  - penSize / 2, penSize, penSize);
     }
   } catch(error) {
     print('Error in wandering.draw()! -- $error');
@@ -100,10 +100,10 @@ main() {
       var lastLine = pen.path.lastLine(pen.path.lastSegment());
       var segment = new Segment();
       pen.path.segments.add(segment);
-      int lineCount = randomInt(MAX_LINE_COUNT_IN_SEGMENT);
+      int lineCount = randomInt(maxLineCountInSegment);
       for (var i = 0; i < lineCount; i++) {
-        var x = randomDouble() * (canvas.width - PEN_SIZE / 2);
-        var y = randomDouble() * (canvas.height - PEN_SIZE / 2);
+        var x = randomDouble() * (canvas.width - penSize / 2);
+        var y = randomDouble() * (canvas.height - penSize / 2);
         var randomPoint = new Point(x, y);
         var line = new Line(lastLine.endPoint, randomPoint);
         segment.lines.add(line);
@@ -113,8 +113,8 @@ main() {
       print('Error in wandering.main()! -- $error');
     }
   });
-  // Redraw every INTERVAL ms.
-  new Timer.repeating(INTERVAL, (t) => draw());
+  // Redraw every interval ms.
+  new Timer.repeating(interval, (t) => draw());
 }
 
 

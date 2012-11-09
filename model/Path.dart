@@ -14,8 +14,8 @@ class Path {
 
   Segment lastSegment() {
     var result = null;
-    if (!segments.isEmpty()) {
-      result = segments.last();
+    if (!segments.isEmpty) {
+      result = segments.last;
     }
     return result;
   }
@@ -34,8 +34,8 @@ class Path {
   Line lastLine(Segment segment) {
     var result = null;
     if (segment != null) {
-      if (!segment.lines.isEmpty()) {
-        result = segment.lines.last();
+      if (!segment.lines.isEmpty) {
+        result = segment.lines.last;
       } else {
         var previous = previousSegment(segment);
         if (previous != null) {
