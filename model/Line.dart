@@ -1,3 +1,5 @@
+part of wandering_path;
+
 class Line {
 
   Point beginPoint;

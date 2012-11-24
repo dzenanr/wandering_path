@@ -1,3 +1,5 @@
+part of wandering_path;
+
 class Pen {
 
   var path;

@@ -1,3 +1,5 @@
+library wandering_path;
+
 import 'dart:html';
 import 'dart:isolate';
 import 'dart:math';
