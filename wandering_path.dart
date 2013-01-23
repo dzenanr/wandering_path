@@ -1,7 +1,7 @@
 library wandering_path;
 
 import 'dart:html';
-import 'dart:isolate';
+import 'dart:async';
 import 'dart:math';
 
 part 'model/pen.dart';
