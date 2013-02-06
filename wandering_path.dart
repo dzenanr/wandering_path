@@ -4,10 +4,11 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:math';
 
-part 'model/pen.dart';
-part 'model/path.dart';
-part 'model/segment.dart';
 part 'model/line.dart';
+part 'model/path.dart';
+part 'model/pen.dart';
+part 'model/point.dart';
+part 'model/segment.dart';
 
 // See the style guide: http://www.dartlang.org/articles/style-guide/ .
 
