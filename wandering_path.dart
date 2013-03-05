@@ -24,7 +24,7 @@ final String lineColor = '#000000'; // black
 final int penSize = 4;
 final int maxLineCountInSegment = 8;
 // The canvas will be redrawn every INTERVAL ms.
-final int interval = 10;
+const int interval = 10;
 
 var canvas;
 var context;
@@ -98,7 +98,7 @@ main() {
   context = canvas.getContext('2d');
   pen = new Pen(center());
   segmentButton = document.query('#segment');
-  segmentButton.on.click.add((MouseEvent e) {
+  segmentButton.onClick.listen((MouseEvent e) {
     try {
       var lastLine = pen.path.lastLine(pen.path.lastSegment());
       var segment = new Segment();
@@ -117,7 +117,7 @@ main() {
     }
   });
   // Redraw every interval ms.
-  new Timer.repeating(interval, (t) => draw());
+  new Timer.repeating(const Duration(milliseconds: interval), (t) => draw());
 }
 
 
