@@ -1,6 +1,6 @@
 ##Wandering Path
 
-Categories: education, canvas, lines, segments, paths.
+**Categories**: education, canvas, lines, segments, paths.
 
-Description: 
+**Description**
 Drawing a path of random number of segments, each having a random number of lines.
