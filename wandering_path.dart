@@ -93,10 +93,10 @@ draw() {
 }
 
 main() {
-  canvas = document.query('#canvas');
+  canvas = document.querySelector('#canvas');
   context = canvas.getContext('2d');
   pen = new Pen(center());
-  segmentButton = document.query('#segment');
+  segmentButton = document.querySelector('#segment');
   segmentButton.onClick.listen((MouseEvent e) {
     try {
       var lastLine = pen.path.lastLine(pen.path.lastSegment());
