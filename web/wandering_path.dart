@@ -1,13 +1,8 @@
-library wandering_path;
-
 import 'dart:html';
 import 'dart:async';
 import 'dart:math';
 
-part 'model/line.dart';
-part 'model/path.dart';
-part 'model/pen.dart';
-part 'model/segment.dart';
+import 'package:wandering_path/wandering_path.dart';
 
 // See the style guide: http://www.dartlang.org/articles/style-guide/ .
 
@@ -23,7 +18,7 @@ final String lineColor = '#000000'; // black
 final int penSize = 4;
 final int maxLineCountInSegment = 8;
 // The canvas will be redrawn every INTERVAL ms.
-const int INTERVAL = 10;
+const int interval = 10;
 
 var canvas;
 var context;
@@ -116,7 +111,7 @@ main() {
     }
   });
   // Redraw every INTERVAL ms.
-  new Timer.periodic(const Duration(milliseconds: INTERVAL), (t) => draw());
+  new Timer.periodic(const Duration(milliseconds: interval), (t) => draw());
 }
 
 
